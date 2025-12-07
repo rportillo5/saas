@@ -1,0 +1,334 @@
+module.exports = [
+"[externals]/node:fs [external] (node:fs, cjs)", ((__turbopack_context__, module, exports) => {
+
+const mod = __turbopack_context__.x("node:fs", () => require("node:fs"));
+
+module.exports = mod;
+}),
+"[externals]/node:path [external] (node:path, cjs)", ((__turbopack_context__, module, exports) => {
+
+const mod = __turbopack_context__.x("node:path", () => require("node:path"));
+
+module.exports = mod;
+}),
+"[project]/node_modules/@clerk/backend/dist/chunk-P263NW7Z.mjs [ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+// src/jwt/legacyReturn.ts
+__turbopack_context__.s([
+    "withLegacyReturn",
+    ()=>withLegacyReturn,
+    "withLegacySyncReturn",
+    ()=>withLegacySyncReturn
+]);
+function withLegacyReturn(cb) {
+    return async (...args)=>{
+        const { data, errors } = await cb(...args);
+        if (errors) {
+            throw errors[0];
+        }
+        return data;
+    };
+}
+function withLegacySyncReturn(cb) {
+    return (...args)=>{
+        const { data, errors } = cb(...args);
+        if (errors) {
+            throw errors[0];
+        }
+        return data;
+    };
+}
+;
+ //# sourceMappingURL=chunk-P263NW7Z.mjs.map
+}),
+"[project]/node_modules/@clerk/backend/dist/index.mjs [ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "createClerkClient",
+    ()=>createClerkClient,
+    "verifyToken",
+    ()=>verifyToken2
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$backend$2f$dist$2f$chunk$2d$KBCTSN55$2e$mjs__$5b$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/@clerk/backend/dist/chunk-KBCTSN55.mjs [ssr] (ecmascript) <locals>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$backend$2f$dist$2f$chunk$2d$YBVFDYDR$2e$mjs__$5b$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/@clerk/backend/dist/chunk-YBVFDYDR.mjs [ssr] (ecmascript) <locals>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$backend$2f$dist$2f$chunk$2d$P263NW7Z$2e$mjs__$5b$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@clerk/backend/dist/chunk-P263NW7Z.mjs [ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$backend$2f$dist$2f$chunk$2d$AR5UB427$2e$mjs__$5b$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@clerk/backend/dist/chunk-AR5UB427.mjs [ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$backend$2f$dist$2f$chunk$2d$HNJNM32R$2e$mjs__$5b$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@clerk/backend/dist/chunk-HNJNM32R.mjs [ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$backend$2f$dist$2f$chunk$2d$RPS7XK5K$2e$mjs__$5b$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@clerk/backend/dist/chunk-RPS7XK5K.mjs [ssr] (ecmascript)");
+// src/index.ts
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$shared$2f$dist$2f$runtime$2f$telemetry$2e$mjs__$5b$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/@clerk/shared/dist/runtime/telemetry.mjs [ssr] (ecmascript) <locals>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$shared$2f$dist$2f$runtime$2f$telemetry$2d$wqMDWlvR$2e$mjs__$5b$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@clerk/shared/dist/runtime/telemetry-wqMDWlvR.mjs [ssr] (ecmascript)");
+;
+;
+;
+;
+;
+;
+;
+var verifyToken2 = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$backend$2f$dist$2f$chunk$2d$P263NW7Z$2e$mjs__$5b$ssr$5d$__$28$ecmascript$29$__["withLegacyReturn"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$backend$2f$dist$2f$chunk$2d$KBCTSN55$2e$mjs__$5b$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__["verifyToken"]);
+function createClerkClient(options) {
+    const opts = {
+        ...options
+    };
+    const apiClient = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$backend$2f$dist$2f$chunk$2d$KBCTSN55$2e$mjs__$5b$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__["createBackendApiClient"])(opts);
+    const requestState = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$backend$2f$dist$2f$chunk$2d$KBCTSN55$2e$mjs__$5b$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__["createAuthenticateRequest"])({
+        options: opts,
+        apiClient
+    });
+    const telemetry = new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$shared$2f$dist$2f$runtime$2f$telemetry$2d$wqMDWlvR$2e$mjs__$5b$ssr$5d$__$28$ecmascript$29$__["TelemetryCollector"]({
+        publishableKey: opts.publishableKey,
+        secretKey: opts.secretKey,
+        samplingRate: 0.1,
+        ...opts.sdkMetadata ? {
+            sdk: opts.sdkMetadata.name,
+            sdkVersion: opts.sdkMetadata.version
+        } : {},
+        ...opts.telemetry || {}
+    });
+    return {
+        ...apiClient,
+        ...requestState,
+        telemetry
+    };
+}
+;
+ //# sourceMappingURL=index.mjs.map
+}),
+"[project]/node_modules/@clerk/nextjs/dist/esm/server/createClerkClient.js [ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "createClerkClientWithOptions",
+    ()=>createClerkClientWithOptions
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$backend$2f$dist$2f$index$2e$mjs__$5b$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@clerk/backend/dist/index.mjs [ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$server$2f$constants$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@clerk/nextjs/dist/esm/server/constants.js [ssr] (ecmascript)");
+;
+;
+;
+const clerkClientDefaultOptions = {
+    secretKey: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$server$2f$constants$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["SECRET_KEY"],
+    publishableKey: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$server$2f$constants$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["PUBLISHABLE_KEY"],
+    apiUrl: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$server$2f$constants$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["API_URL"],
+    apiVersion: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$server$2f$constants$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["API_VERSION"],
+    userAgent: `${"@clerk/nextjs"}@${"6.36.0"}`,
+    proxyUrl: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$server$2f$constants$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["PROXY_URL"],
+    domain: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$server$2f$constants$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["DOMAIN"],
+    isSatellite: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$server$2f$constants$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["IS_SATELLITE"],
+    machineSecretKey: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$server$2f$constants$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["MACHINE_SECRET_KEY"],
+    sdkMetadata: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$server$2f$constants$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["SDK_METADATA"],
+    telemetry: {
+        disabled: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$server$2f$constants$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["TELEMETRY_DISABLED"],
+        debug: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$server$2f$constants$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["TELEMETRY_DEBUG"]
+    }
+};
+const createClerkClientWithOptions = (options)=>(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$backend$2f$dist$2f$index$2e$mjs__$5b$ssr$5d$__$28$ecmascript$29$__["createClerkClient"])({
+        ...clerkClientDefaultOptions,
+        ...options
+    });
+;
+ //# sourceMappingURL=createClerkClient.js.map
+}),
+"[project]/node_modules/@clerk/nextjs/dist/esm/chunk-BUSYA2B4.js [ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "__commonJS",
+    ()=>__commonJS
+]);
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __commonJS = (cb, mod)=>function __require() {
+        return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = {
+            exports: {}
+        }).exports, mod), mod.exports;
+    };
+;
+ //# sourceMappingURL=chunk-BUSYA2B4.js.map
+}),
+"[project]/node_modules/@clerk/nextjs/dist/esm/runtime/node/safe-node-apis.js [ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>__TURBOPACK__default__export__
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$chunk$2d$BUSYA2B4$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@clerk/nextjs/dist/esm/chunk-BUSYA2B4.js [ssr] (ecmascript)");
+;
+var require_safe_node_apis = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$chunk$2d$BUSYA2B4$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["__commonJS"])({
+    "src/runtime/node/safe-node-apis.js" (exports, module) {
+        const { existsSync, writeFileSync, readFileSync, appendFileSync, mkdirSync, rmSync } = __turbopack_context__.r("[externals]/node:fs [external] (node:fs, cjs)");
+        const path = __turbopack_context__.r("[externals]/node:path [external] (node:path, cjs)");
+        const fs = {
+            existsSync,
+            writeFileSync,
+            readFileSync,
+            appendFileSync,
+            mkdirSync,
+            rmSync
+        };
+        const cwd = ()=>process.cwd();
+        module.exports = {
+            fs,
+            path,
+            cwd
+        };
+    }
+});
+const __TURBOPACK__default__export__ = require_safe_node_apis();
+ //# sourceMappingURL=safe-node-apis.js.map
+}),
+"[project]/node_modules/@clerk/nextjs/dist/esm/server/fs/utils.js [ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "nodeCwdOrThrow",
+    ()=>nodeCwdOrThrow,
+    "nodeFsOrThrow",
+    ()=>nodeFsOrThrow,
+    "nodePathOrThrow",
+    ()=>nodePathOrThrow
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$runtime$2f$node$2f$safe$2d$node$2d$apis$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@clerk/nextjs/dist/esm/runtime/node/safe-node-apis.js [ssr] (ecmascript)");
+;
+;
+function assertNotNullable(value, moduleName) {
+    if (!value) {
+        throw new Error(`Clerk: ${moduleName} is missing. This is an internal error. Please contact Clerk's support.`);
+    }
+}
+const nodeFsOrThrow = ()=>{
+    assertNotNullable(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$runtime$2f$node$2f$safe$2d$node$2d$apis$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["default"].fs, "fs");
+    return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$runtime$2f$node$2f$safe$2d$node$2d$apis$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["default"].fs;
+};
+const nodePathOrThrow = ()=>{
+    assertNotNullable(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$runtime$2f$node$2f$safe$2d$node$2d$apis$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["default"].path, "path");
+    return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$runtime$2f$node$2f$safe$2d$node$2d$apis$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["default"].path;
+};
+const nodeCwdOrThrow = ()=>{
+    assertNotNullable(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$runtime$2f$node$2f$safe$2d$node$2d$apis$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["default"].cwd, "cwd");
+    return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$runtime$2f$node$2f$safe$2d$node$2d$apis$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["default"].cwd;
+};
+;
+ //# sourceMappingURL=utils.js.map
+}),
+"[project]/node_modules/@clerk/nextjs/dist/esm/server/keyless-telemetry.js [ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "detectKeylessEnvDrift",
+    ()=>detectKeylessEnvDrift
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$utils$2f$feature$2d$flags$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@clerk/nextjs/dist/esm/utils/feature-flags.js [ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$server$2f$createClerkClient$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@clerk/nextjs/dist/esm/server/createClerkClient.js [ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$server$2f$fs$2f$utils$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@clerk/nextjs/dist/esm/server/fs/utils.js [ssr] (ecmascript)");
+;
+;
+;
+;
+const EVENT_KEYLESS_ENV_DRIFT_DETECTED = "KEYLESS_ENV_DRIFT_DETECTED";
+const EVENT_SAMPLING_RATE = 1;
+const TELEMETRY_FLAG_FILE = ".clerk/.tmp/telemetry.json";
+function getTelemetryFlagFilePath() {
+    const path = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$server$2f$fs$2f$utils$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["nodePathOrThrow"])();
+    return path.join(process.cwd(), TELEMETRY_FLAG_FILE);
+}
+function tryMarkTelemetryEventAsFired() {
+    try {
+        if (__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$utils$2f$feature$2d$flags$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["canUseKeyless"]) {
+            const { mkdirSync, writeFileSync } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$server$2f$fs$2f$utils$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["nodeFsOrThrow"])();
+            const path = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$server$2f$fs$2f$utils$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["nodePathOrThrow"])();
+            const flagFilePath = getTelemetryFlagFilePath();
+            const flagDirectory = path.dirname(flagFilePath);
+            mkdirSync(flagDirectory, {
+                recursive: true
+            });
+            const flagData = {
+                firedAt: /* @__PURE__ */ new Date().toISOString(),
+                event: EVENT_KEYLESS_ENV_DRIFT_DETECTED
+            };
+            writeFileSync(flagFilePath, JSON.stringify(flagData, null, 2), {
+                flag: "wx"
+            });
+            return true;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        if ((error == null ? void 0 : error.code) === "EEXIST") {
+            return false;
+        }
+        console.warn("Failed to create telemetry flag file:", error);
+        return false;
+    }
+}
+async function detectKeylessEnvDrift() {
+    var _a, _b;
+    if (!__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$utils$2f$feature$2d$flags$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["canUseKeyless"]) {
+        return;
+    }
+    if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+    ;
+    try {
+        const { safeParseClerkFile } = await __turbopack_context__.A("[project]/node_modules/@clerk/nextjs/dist/esm/server/keyless-node.js [ssr] (ecmascript, async loader)");
+        const keylessFile = safeParseClerkFile();
+        if (!keylessFile) {
+            return;
+        }
+        const envPublishableKey = ("TURBOPACK compile-time value", "pk_test_aW50ZW5zZS10dXJ0bGUtNTkuY2xlcmsuYWNjb3VudHMuZGV2JA");
+        const envSecretKey = process.env.CLERK_SECRET_KEY;
+        const hasEnvVars = Boolean(envPublishableKey || envSecretKey);
+        const keylessFileHasKeys = Boolean((keylessFile == null ? void 0 : keylessFile.publishableKey) && (keylessFile == null ? void 0 : keylessFile.secretKey));
+        const envVarsMissing = !envPublishableKey && !envSecretKey;
+        if (!hasEnvVars && !keylessFileHasKeys) {
+            return;
+        }
+        if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+        ;
+        if (!keylessFileHasKeys) {
+            return;
+        }
+        if (!hasEnvVars) {
+            return;
+        }
+        const publicKeyMatch = Boolean(envPublishableKey && keylessFile.publishableKey && envPublishableKey === keylessFile.publishableKey);
+        const secretKeyMatch = Boolean(envSecretKey && keylessFile.secretKey && envSecretKey === keylessFile.secretKey);
+        const hasActualDrift = envPublishableKey && keylessFile.publishableKey && !publicKeyMatch || envSecretKey && keylessFile.secretKey && !secretKeyMatch;
+        if (!hasActualDrift) {
+            return;
+        }
+        const payload = {
+            publicKeyMatch,
+            secretKeyMatch,
+            envVarsMissing,
+            keylessFileHasKeys,
+            keylessPublishableKey: (_a = keylessFile.publishableKey) != null ? _a : "",
+            envPublishableKey: envPublishableKey != null ? envPublishableKey : ""
+        };
+        const clerkClient = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$server$2f$createClerkClient$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["createClerkClientWithOptions"])({
+            publishableKey: keylessFile.publishableKey,
+            secretKey: keylessFile.secretKey,
+            telemetry: {
+                samplingRate: 1
+            }
+        });
+        const shouldFireEvent = tryMarkTelemetryEventAsFired();
+        if (shouldFireEvent) {
+            const driftDetectedEvent = {
+                event: EVENT_KEYLESS_ENV_DRIFT_DETECTED,
+                eventSamplingRate: EVENT_SAMPLING_RATE,
+                payload
+            };
+            (_b = clerkClient.telemetry) == null ? void 0 : _b.record(driftDetectedEvent);
+        }
+    } catch (error) {
+        console.warn("Failed to detect keyless environment drift:", error);
+    }
+}
+;
+ //# sourceMappingURL=keyless-telemetry.js.map
+}),
+];
+
+//# sourceMappingURL=%5Broot-of-the-server%5D__cb9aa08e._.js.map

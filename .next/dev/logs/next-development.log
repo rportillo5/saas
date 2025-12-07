@@ -1,0 +1,10 @@
+[00:00:02.573] Server  LOG      ✓ Ready in 1745ms
+[00:00:12.334] Server  LOG      ○ Compiling / ...
+[00:00:13.688] Server  WARN    Warning: <title> should not be used in _document.js's <Head>. https://nextjs.org/docs/messages/no-document-title
+[00:00:14.333] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:00:14.591] Server  WARN    Warning: <title> should not be used in _document.js's <Head>. https://nextjs.org/docs/messages/no-document-title
+[00:00:15.165] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:00:15.377] Server  WARN    Warning: <title> should not be used in _document.js's <Head>. https://nextjs.org/docs/messages/no-document-title
+[00:00:15.824] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:03:06.912] Server  WARN    Warning: <title> should not be used in _document.js's <Head>. https://nextjs.org/docs/messages/no-document-title
+[00:03:07.561] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview

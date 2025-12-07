@@ -1,0 +1,21 @@
+(globalThis.TURBOPACK_CHUNK_LISTS || (globalThis.TURBOPACK_CHUNK_LISTS = [])).push({
+    script: typeof document === "object" ? document.currentScript : undefined,
+    chunks: [
+  "static/chunks/node_modules_@clerk_nextjs_dist_esm_3ea12ea0._.js",
+  "static/chunks/node_modules_next_dist_compiled_7dd1874c._.js",
+  "static/chunks/node_modules_next_dist_shared_lib_329e71a0._.js",
+  "static/chunks/node_modules_next_dist_client_514e0b1b._.js",
+  "static/chunks/node_modules_next_dist_server_d5728674._.js",
+  "static/chunks/node_modules_next_dist_53740915._.js",
+  "static/chunks/node_modules_next_6a1bac9a._.js",
+  "static/chunks/node_modules_react-dom_4411d9bd._.js",
+  "static/chunks/node_modules_@clerk_shared_dist_runtime_32806b5e._.js",
+  "static/chunks/node_modules_swr_dist_85285875._.js",
+  "static/chunks/node_modules_@clerk_clerk-react_dist_69676ee9._.js",
+  "static/chunks/node_modules_@clerk_backend_dist_fafd7029._.js",
+  "static/chunks/node_modules_b702208c._.js",
+  "static/chunks/[root-of-the-server]__73ecdec8._.js",
+  "static/chunks/_0d768074._.css"
+],
+    source: "entry"
+});

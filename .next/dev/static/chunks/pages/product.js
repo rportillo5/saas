@@ -1,0 +1,23 @@
+__turbopack_load_page_chunks__("/product", [
+  "static/chunks/node_modules_@clerk_nextjs_dist_esm_a04268b9._.js",
+  "static/chunks/node_modules_next_dist_compiled_7dd1874c._.js",
+  "static/chunks/node_modules_next_dist_shared_lib_329e71a0._.js",
+  "static/chunks/node_modules_next_dist_client_514e0b1b._.js",
+  "static/chunks/node_modules_next_dist_server_d5728674._.js",
+  "static/chunks/node_modules_next_dist_53740915._.js",
+  "static/chunks/node_modules_next_6a1bac9a._.js",
+  "static/chunks/node_modules_react-dom_4411d9bd._.js",
+  "static/chunks/node_modules_@clerk_shared_dist_runtime_32806b5e._.js",
+  "static/chunks/node_modules_swr_dist_85285875._.js",
+  "static/chunks/node_modules_@clerk_clerk-react_dist_69676ee9._.js",
+  "static/chunks/node_modules_date-fns_6c1479f4._.js",
+  "static/chunks/node_modules_@floating-ui_react_dist_ca3caa08._.js",
+  "static/chunks/node_modules_react-datepicker_dist_index_es_0a0b086b.js",
+  "static/chunks/node_modules_micromark-core-commonmark_dev_lib_e19c1c6a._.js",
+  "static/chunks/node_modules_@clerk_backend_dist_fafd7029._.js",
+  "static/chunks/node_modules_@floating-ui_d2042138._.js",
+  "static/chunks/node_modules_63b9089f._.js",
+  "static/chunks/[root-of-the-server]__45bed4f1._.js",
+  "static/chunks/pages_product_2da965e7._.js",
+  "static/chunks/turbopack-pages_product_6d9876a5._.js"
+])
