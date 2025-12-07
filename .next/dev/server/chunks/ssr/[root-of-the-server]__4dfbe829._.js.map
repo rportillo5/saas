@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 58, "column": 0}, "map": {"version":3,"sources":["file:///Volumes/LaCie/ai_prod/saas/pages/_app.tsx"],"sourcesContent":["import { ClerkProvider } from '@clerk/nextjs';\nimport type { AppProps } from 'next/app';\nimport 'react-datepicker/dist/react-datepicker.css';\nimport '../styles/globals.css';\n\nexport default function MyApp({ Component, pageProps }: AppProps) {\n  return (\n    <ClerkProvider {...pageProps}>\n      <Component {...pageProps} />\n    </ClerkProvider>\n  );\n}"],"names":[],"mappings":";;;;;AAAA;;;;;AAKe,SAAS,MAAM,EAAE,SAAS,EAAE,SAAS,EAAY;IAC9D,qBACE,qKAAC,mLAAa;QAAE,GAAG,SAAS;kBAC1B,cAAA,qKAAC;YAAW,GAAG,SAAS;;;;;;;;;;;AAG9B"}}]
-}
