@@ -11,16 +11,18 @@
   "dependencies": {
     "@clerk/clerk-js": "^5.113.0",
     "@clerk/clerk-react": "^5.58.0",
-    "@clerk/nextjs": "^6.36.0",
+    "@clerk/nextjs": "^6.36.2",
     "@microsoft/fetch-event-source": "^2.0.1",
     "@tailwindcss/typography": "^0.5.19",
-    "next": "^16.0.7",
+    "next": "^16.0.9",
     "react": "^19.2.1",
-    "react-datepicker": "^8.7.0",
+    "react-datepicker": "^8.10.0",
     "react-dom": "^19.2.1",
     "react-markdown": "^10.1.0",
     "remark-breaks": "^4.0.0",
-    "remark-gfm": "^4.0.1"
+    "remark-gfm": "^4.0.1",
+    "tailwind": "^2.3.1",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -29,7 +31,7 @@
     "@types/react": "^19",
     "@types/react-datepicker": "^6.2.0",
     "@types/react-dom": "^19",
-    "eslint": "^9",
+    "eslint": "^9.39.1",
     "eslint-config-next": "15.5.4",
     "tailwindcss": "^4",
     "typescript": "^5"

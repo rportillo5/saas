@@ -1,0 +1,10 @@
+var R=require("../chunks/ssr/[turbopack]_runtime.js")("server/pages/_app.js")
+R.c("server/chunks/ssr/node_modules_@clerk_nextjs_dist_esm_a02a4261._.js")
+R.c("server/chunks/ssr/node_modules_@clerk_shared_dist_runtime_8ef8ed57._.js")
+R.c("server/chunks/ssr/node_modules_@clerk_clerk-react_dist_e16bc22b._.js")
+R.c("server/chunks/ssr/node_modules_next_ee28eef0._.js")
+R.c("server/chunks/ssr/node_modules_@clerk_backend_dist_0cec94bd._.js")
+R.c("server/chunks/ssr/node_modules_1a850c62._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__b7043282._.js")
+R.m("[project]/pages/_app.tsx [ssr] (ecmascript)")
+module.exports=R.m("[project]/pages/_app.tsx [ssr] (ecmascript)").exports

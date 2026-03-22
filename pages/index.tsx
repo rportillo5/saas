@@ -89,7 +89,7 @@ export default function Home() {
           <SignedIn>
             <Link href="/product">
               <button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all transform hover:scale-105">
-                Open Medical Consultation Assistant
+                Open Consultation Assistant
               </button>
             </Link>
           </SignedIn>

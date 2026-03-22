@@ -1,0 +1,12 @@
+._.
+*.json
+package-lock.json
+.next/
+node_modules*
+.next/
+.env
+.env.local
+.gitignore
+.git/
+.gitignore
+.gitignore
