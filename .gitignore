@@ -1,6 +1,10 @@
 node_modules
+.next
 .vercel
 .env*.local
+.env
 .DS_Store
 ._*
 .__*
+__pycache__
+*.pyc
