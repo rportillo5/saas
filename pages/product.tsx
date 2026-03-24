@@ -22,11 +22,13 @@ function ConsultationForm() {
     const [output, setOutput] = useState('');
     const [billingCodes, setBillingCodes] = useState<{code: string; description: string}[]>([]);
     const [loading, setLoading] = useState(false);
+    const [specialtyMismatch, setSpecialtyMismatch] = useState('');
 
     async function handleSubmit(e: FormEvent) {
         e.preventDefault();
         setOutput('');
         setBillingCodes([]);
+        setSpecialtyMismatch('');
         setLoading(true);
 
         const jwt = await getToken();
@@ -55,6 +57,20 @@ function ConsultationForm() {
             }),
             onmessage(ev) {
                 buffer += ev.data;
+
+                // Check for specialty mismatch
+                const mismatchStart = '<!-- SPECIALTY_MISMATCH -->';
+                const mismatchEnd = '<!-- /SPECIALTY_MISMATCH -->';
+                const mismatchStartIdx = buffer.indexOf(mismatchStart);
+                const mismatchEndIdx = buffer.indexOf(mismatchEnd);
+                if (mismatchStartIdx !== -1 && mismatchEndIdx !== -1) {
+                    const reason = buffer.slice(mismatchStartIdx + mismatchStart.length, mismatchEndIdx).trim();
+                    setSpecialtyMismatch(reason);
+                    setLoading(false);
+                    controller.abort();
+                    return;
+                }
+
                 const startTag = '<!-- BILLING_CODES_START -->';
                 const endTag = '<!-- BILLING_CODES_END -->';
                 const startIdx = buffer.indexOf(startTag);
@@ -180,6 +196,25 @@ function ConsultationForm() {
                     ) : 'Generate Summary'}
                 </button>
             </form>
+
+            {specialtyMismatch && (
+                <div className="mt-8 bg-amber-50 dark:bg-amber-900/30 border border-amber-300 dark:border-amber-700 rounded-xl shadow-lg p-6">
+                    <div className="flex items-start gap-3">
+                        <span className="text-amber-600 dark:text-amber-400 text-2xl leading-none">&#9888;</span>
+                        <div>
+                            <h3 className="text-lg font-semibold text-amber-800 dark:text-amber-300 mb-1">
+                                Specialty Mismatch
+                            </h3>
+                            <p className="text-amber-700 dark:text-amber-400">
+                                {specialtyMismatch}
+                            </p>
+                            <p className="text-sm text-amber-600 dark:text-amber-500 mt-2">
+                                Please verify the selected specialty matches the consultation notes and try again.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {output && (
                 <section className="mt-8 bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg p-8">

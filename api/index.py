@@ -46,6 +46,33 @@ Notes:
 {visit.notes}"""
 
 
+specialty_check_prompt = """You are a medical specialty classifier.
+Given a medical specialty and doctor's consultation notes, determine if the notes
+are relevant to the specified specialty.
+
+Reply with ONLY a JSON object in this exact format:
+{"match": true} if the notes are relevant to the specialty
+{"match": false, "reason": "<one sentence explanation>"} if the notes do NOT match
+
+Be reasonable: General Practice covers a wide range of conditions.
+Only flag a mismatch when the notes clearly belong to a different specialty."""
+
+
+def check_specialty_match(client: OpenAI, specialty: str, notes: str) -> dict:
+    resp = client.chat.completions.create(
+        model="gpt-5-nano",
+        messages=[
+            {"role": "system", "content": specialty_check_prompt},
+            {"role": "user", "content": f"Specialty: {specialty}\n\nNotes:\n{notes}"},
+        ],
+    )
+    text = resp.choices[0].message.content.strip()
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        return {"match": True}
+
+
 @app.post("/api")
 def consultation_summary(
     visit: Visit,
@@ -53,6 +80,14 @@ def consultation_summary(
 ):
     user_id = creds.decoded["sub"]  # Available for tracking/auditing
     client = OpenAI()
+
+    # Validate notes match the selected specialty
+    specialty_result = check_specialty_match(client, visit.specialty, visit.notes)
+    if not specialty_result.get("match", True):
+        reason = specialty_result.get("reason", "The consultation notes do not appear to match the selected specialty.")
+        def mismatch_stream():
+            yield f"data: <!-- SPECIALTY_MISMATCH -->{reason}<!-- /SPECIALTY_MISMATCH -->\n\n"
+        return StreamingResponse(mismatch_stream(), media_type="text/event-stream")
 
     user_prompt = user_prompt_for(visit)
 
