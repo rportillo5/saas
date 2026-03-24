@@ -1,5 +1,6 @@
 import os
 import json
+from concurrent.futures import ThreadPoolExecutor
 import requests as http_requests  # type: ignore
 from fastapi import FastAPI, Depends  # type: ignore
 from fastapi.middleware.cors import CORSMiddleware  # type: ignore
@@ -60,6 +61,10 @@ def consultation_summary(
         {"role": "user", "content": user_prompt},
     ]
 
+    # Start billing code extraction in parallel with the summary stream
+    billing_executor = ThreadPoolExecutor(max_workers=1)
+    billing_future = billing_executor.submit(lookup_billing_codes, client, visit.notes)
+
     stream = client.chat.completions.create(
         model="gpt-5-nano",
         messages=prompt,
@@ -76,7 +81,8 @@ def consultation_summary(
                     yield "data:  \n"
                 yield f"data: {lines[-1]}\n\n"
 
-        billing_table = lookup_billing_codes(visit.notes)
+        billing_table = billing_future.result(timeout=30)
+        billing_executor.shutdown(wait=False)
         if billing_table:
             yield "data: \n\n"
             yield "data: <!-- BILLING_CODES_START -->\n\n"
@@ -86,26 +92,80 @@ def consultation_summary(
     return StreamingResponse(event_stream(), media_type="text/event-stream")
 
 
-def lookup_billing_codes(notes: str) -> str:
+extraction_prompt = """You are an experienced ICD-10 and CPT medical billing coder.
+Given the doctor's consultation notes below, extract ONLY the specific billable items
+that were ACTUALLY PERFORMED or PRESCRIBED during this visit.
+
+Include:
+- Procedures performed (e.g., intramuscular injection, wound suture, X-ray)
+- Medications administered in-office (e.g., intramuscular corticosteroid injection)
+- Diagnostic tests performed (e.g., urinalysis, blood draw)
+- E&M service level (e.g., office visit established patient)
+
+Do NOT include:
+- Medications prescribed for home use (e.g., "take ibuprofen 400mg twice daily")
+- Future referrals or follow-ups not yet performed
+- General diagnoses or symptoms without a billable action
+
+Return ONLY a JSON array of short, specific search terms for each billable item.
+Example: ["office visit established patient moderate complexity", "intramuscular corticosteroid injection", "chest X-ray 2 views"]
+If no billable items are found, return [].
+Return ONLY the JSON array, no other text."""
+
+
+def extract_billable_items(client: OpenAI, notes: str) -> list[str]:
+    resp = client.chat.completions.create(
+        model="gpt-5-nano",
+        messages=[
+            {"role": "system", "content": extraction_prompt},
+            {"role": "user", "content": notes},
+        ],
+    )
+    text = resp.choices[0].message.content.strip()
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        return []
+
+
+def lookup_billing_codes(client: OpenAI, notes: str) -> str:
     api_key = os.getenv("SEQUOIA_CODES_API_KEY")
     if not api_key:
         return ""
 
-    resp = http_requests.get(
-        "https://api.sequoiacodes.com/v1/cpt/searchCode",
-        params={"query": notes, "limit": 10},
-        headers={"Authorization": f"Bearer {api_key}"},
-        timeout=15,
-    )
-    if resp.status_code != 200:
+    billable_items = extract_billable_items(client, notes)
+    if not billable_items:
         return ""
 
-    results = resp.json().get("data", {}).get("results", [])
-    if not results:
-        return ""
+    def search_code(item: str):
+        resp = http_requests.get(
+            "https://api.sequoiacodes.com/v1/cpt/searchCode",
+            params={"query": item, "limit": 1},
+            headers={"Authorization": f"Bearer {api_key}"},
+            timeout=15,
+        )
+        if resp.status_code != 200:
+            return None
+        results = resp.json().get("data", {}).get("results", [])
+        if results:
+            return results[0]
+        return None
 
-    codes = [
-        {"code": item.get("code", ""), "description": item.get("short_description", "")}
-        for item in results
-    ]
+    with ThreadPoolExecutor(max_workers=len(billable_items)) as pool:
+        search_results = list(pool.map(search_code, billable_items))
+
+    seen_codes = set()
+    codes = []
+    for result in search_results:
+        if result:
+            code = result.get("code", "")
+            if code and code not in seen_codes:
+                seen_codes.add(code)
+                codes.append({
+                    "code": code,
+                    "description": result.get("short_description", ""),
+                })
+
+    if not codes:
+        return ""
     return json.dumps(codes)

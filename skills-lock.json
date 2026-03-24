@@ -1,10 +1,25 @@
 {
   "version": 1,
   "skills": {
+    "clinical-reports": {
+      "source": "davila7/claude-code-templates",
+      "sourceType": "github",
+      "computedHash": "58e41adfc9bf932050ff54895977f8fbc7cfcdc2b4566493caae261dd1e7d1e2"
+    },
     "cpt-codes": {
       "source": "sequoia-port/codes",
       "sourceType": "github",
       "computedHash": "85da270ca90cab4b4dcb4ca57a0a482062a875856b66f262526b812ebf65fb19"
+    },
+    "healthcare-data-domain": {
+      "source": "hollandkevint/data-product-operator",
+      "sourceType": "github",
+      "computedHash": "0bfc34998074a4b507173f901cf74f69746b4422e9cf254ff0d1bb1a119fd2f4"
+    },
+    "healthcare-expert": {
+      "source": "personamanagmentlayer/pcl",
+      "sourceType": "github",
+      "computedHash": "5ecc6139f1ebb4b7b9f82ac581fbfd5994e0514f4f9f599ffc903f3a6ae3d81e"
     }
   }
 }
