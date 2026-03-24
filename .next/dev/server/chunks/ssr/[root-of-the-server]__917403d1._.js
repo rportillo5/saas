@@ -407,7 +407,55 @@ function ConsultationForm() {
                         type: "submit",
                         disabled: loading,
                         className: "w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200",
-                        children: loading ? 'Generating Summary...' : 'Generate Summary'
+                        children: loading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("span", {
+                            className: "inline-flex items-center gap-2",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("svg", {
+                                    className: "animate-spin h-5 w-5",
+                                    viewBox: "0 0 24 24",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("circle", {
+                                            className: "opacity-25",
+                                            cx: "12",
+                                            cy: "12",
+                                            r: "10",
+                                            stroke: "currentColor",
+                                            strokeWidth: "4",
+                                            fill: "none"
+                                        }, void 0, false, {
+                                            fileName: "[project]/pages/product.tsx",
+                                            lineNumber: 175,
+                                            columnNumber: 33
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("path", {
+                                            className: "opacity-75",
+                                            fill: "currentColor",
+                                            d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                                        }, void 0, false, {
+                                            fileName: "[project]/pages/product.tsx",
+                                            lineNumber: 176,
+                                            columnNumber: 33
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/pages/product.tsx",
+                                    lineNumber: 174,
+                                    columnNumber: 29
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("span", {
+                                    className: "animate-pulse",
+                                    children: "Generating Summary..."
+                                }, void 0, false, {
+                                    fileName: "[project]/pages/product.tsx",
+                                    lineNumber: 178,
+                                    columnNumber: 29
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/pages/product.tsx",
+                            lineNumber: 173,
+                            columnNumber: 25
+                        }, this) : 'Generate Summary'
                     }, void 0, false, {
                         fileName: "[project]/pages/product.tsx",
                         lineNumber: 167,
@@ -432,12 +480,12 @@ function ConsultationForm() {
                             children: output
                         }, void 0, false, {
                             fileName: "[project]/pages/product.tsx",
-                            lineNumber: 179,
+                            lineNumber: 187,
                             columnNumber: 25
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/pages/product.tsx",
-                        lineNumber: 178,
+                        lineNumber: 186,
                         columnNumber: 21
                     }, this),
                     billingCodes.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
@@ -451,14 +499,14 @@ function ConsultationForm() {
                                         children: "$"
                                     }, void 0, false, {
                                         fileName: "[project]/pages/product.tsx",
-                                        lineNumber: 187,
+                                        lineNumber: 195,
                                         columnNumber: 33
                                     }, this),
                                     "Medical Billing Codes"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/pages/product.tsx",
-                                lineNumber: 186,
+                                lineNumber: 194,
                                 columnNumber: 29
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
@@ -475,7 +523,7 @@ function ConsultationForm() {
                                                         children: "Code"
                                                     }, void 0, false, {
                                                         fileName: "[project]/pages/product.tsx",
-                                                        lineNumber: 194,
+                                                        lineNumber: 202,
                                                         columnNumber: 45
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("th", {
@@ -483,18 +531,18 @@ function ConsultationForm() {
                                                         children: "Description"
                                                     }, void 0, false, {
                                                         fileName: "[project]/pages/product.tsx",
-                                                        lineNumber: 195,
+                                                        lineNumber: 203,
                                                         columnNumber: 45
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/pages/product.tsx",
-                                                lineNumber: 193,
+                                                lineNumber: 201,
                                                 columnNumber: 41
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/pages/product.tsx",
-                                            lineNumber: 192,
+                                            lineNumber: 200,
                                             columnNumber: 37
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("tbody", {
@@ -506,7 +554,7 @@ function ConsultationForm() {
                                                             children: item.code
                                                         }, void 0, false, {
                                                             fileName: "[project]/pages/product.tsx",
-                                                            lineNumber: 204,
+                                                            lineNumber: 212,
                                                             columnNumber: 49
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("td", {
@@ -514,41 +562,41 @@ function ConsultationForm() {
                                                             children: item.description
                                                         }, void 0, false, {
                                                             fileName: "[project]/pages/product.tsx",
-                                                            lineNumber: 205,
+                                                            lineNumber: 213,
                                                             columnNumber: 49
                                                         }, this)
                                                     ]
                                                 }, item.code, true, {
                                                     fileName: "[project]/pages/product.tsx",
-                                                    lineNumber: 200,
+                                                    lineNumber: 208,
                                                     columnNumber: 45
                                                 }, this))
                                         }, void 0, false, {
                                             fileName: "[project]/pages/product.tsx",
-                                            lineNumber: 198,
+                                            lineNumber: 206,
                                             columnNumber: 37
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/pages/product.tsx",
-                                    lineNumber: 191,
+                                    lineNumber: 199,
                                     columnNumber: 33
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/pages/product.tsx",
-                                lineNumber: 190,
+                                lineNumber: 198,
                                 columnNumber: 29
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/pages/product.tsx",
-                        lineNumber: 185,
+                        lineNumber: 193,
                         columnNumber: 25
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/pages/product.tsx",
-                lineNumber: 177,
+                lineNumber: 185,
                 columnNumber: 17
             }, this)
         ]
@@ -568,12 +616,12 @@ function Product() {
                     showName: true
                 }, void 0, false, {
                     fileName: "[project]/pages/product.tsx",
-                    lineNumber: 224,
+                    lineNumber: 232,
                     columnNumber: 17
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/pages/product.tsx",
-                lineNumber: 223,
+                lineNumber: 231,
                 columnNumber: 13
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$index$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__["Protect"], {
@@ -589,7 +637,7 @@ function Product() {
                                     children: "Healthcare Professional Plan"
                                 }, void 0, false, {
                                     fileName: "[project]/pages/product.tsx",
-                                    lineNumber: 233,
+                                    lineNumber: 241,
                                     columnNumber: 29
                                 }, void 0),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("p", {
@@ -597,47 +645,47 @@ function Product() {
                                     children: "Streamline your patient consultations with AI-powered summaries"
                                 }, void 0, false, {
                                     fileName: "[project]/pages/product.tsx",
-                                    lineNumber: 236,
+                                    lineNumber: 244,
                                     columnNumber: 29
                                 }, void 0)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/pages/product.tsx",
-                            lineNumber: 232,
+                            lineNumber: 240,
                             columnNumber: 25
                         }, void 0),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
                             className: "max-w-4xl mx-auto",
                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$clerk$2d$react$2f$dist$2f$chunk$2d$6WD75OPE$2e$mjs__$5b$ssr$5d$__$28$ecmascript$29$__["PricingTable"], {}, void 0, false, {
                                 fileName: "[project]/pages/product.tsx",
-                                lineNumber: 241,
+                                lineNumber: 249,
                                 columnNumber: 29
                             }, void 0)
                         }, void 0, false, {
                             fileName: "[project]/pages/product.tsx",
-                            lineNumber: 240,
+                            lineNumber: 248,
                             columnNumber: 25
                         }, void 0)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/pages/product.tsx",
-                    lineNumber: 231,
+                    lineNumber: 239,
                     columnNumber: 21
                 }, void 0),
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(ConsultationForm, {}, void 0, false, {
                     fileName: "[project]/pages/product.tsx",
-                    lineNumber: 246,
+                    lineNumber: 254,
                     columnNumber: 17
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/pages/product.tsx",
-                lineNumber: 228,
+                lineNumber: 236,
                 columnNumber: 13
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/pages/product.tsx",
-        lineNumber: 221,
+        lineNumber: 229,
         columnNumber: 9
     }, this);
 }
