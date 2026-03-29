@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, FormEvent } from 'react';
+import Link from 'next/link';
 import { useAuth } from '@clerk/nextjs';
 import DatePicker from 'react-datepicker';
 import ReactMarkdown from 'react-markdown';
@@ -21,13 +22,33 @@ function ConsultationForm() {
     // Streaming state
     const [output, setOutput] = useState('');
     const [billingCodes, setBillingCodes] = useState<{code: string; description: string}[]>([]);
+    const [emLevel, setEmLevel] = useState<{
+        code: string; patient_type: string; mdm_level: string;
+        problems: string; data: string; risk: string; justification: string;
+    } | null>(null);
+    const [phiProtected, setPhiProtected] = useState(false);
     const [loading, setLoading] = useState(false);
     const [specialtyMismatch, setSpecialtyMismatch] = useState('');
+
+    function handleClear() {
+        setPatientName('');
+        setVisitDate(new Date());
+        setSpecialty('');
+        setNotes('');
+        setOutput('');
+        setBillingCodes([]);
+        setEmLevel(null);
+        setPhiProtected(false);
+        setSpecialtyMismatch('');
+        setLoading(false);
+    }
 
     async function handleSubmit(e: FormEvent) {
         e.preventDefault();
         setOutput('');
         setBillingCodes([]);
+        setEmLevel(null);
+        setPhiProtected(false);
         setSpecialtyMismatch('');
         setLoading(true);
 
@@ -71,18 +92,38 @@ function ConsultationForm() {
                     return;
                 }
 
-                const startTag = '<!-- BILLING_CODES_START -->';
-                const endTag = '<!-- BILLING_CODES_END -->';
-                const startIdx = buffer.indexOf(startTag);
-                const endIdx = buffer.indexOf(endTag);
-                if (startIdx !== -1 && endIdx !== -1) {
-                    const jsonStr = buffer.slice(startIdx + startTag.length, endIdx).trim();
-                    try {
-                        setBillingCodes(JSON.parse(jsonStr));
-                    } catch { /* wait for complete data */ }
-                    setOutput(buffer.slice(0, startIdx).trim());
-                } else if (startIdx !== -1) {
-                    setOutput(buffer.slice(0, startIdx).trim());
+                // Helper to extract and parse a marker block
+                const parseMarker = (buf: string, start: string, end: string) => {
+                    const s = buf.indexOf(start);
+                    const e = buf.indexOf(end);
+                    if (s !== -1 && e !== -1) {
+                        const json = buf.slice(s + start.length, e).trim();
+                        try { return JSON.parse(json); } catch { return null; }
+                    }
+                    return null;
+                };
+
+                // Parse billing codes
+                const billingData = parseMarker(buffer, '<!-- BILLING_CODES_START -->', '<!-- BILLING_CODES_END -->');
+                if (billingData) setBillingCodes(billingData);
+
+                // Parse E&M level
+                const emData = parseMarker(buffer, '<!-- EM_LEVEL_START -->', '<!-- EM_LEVEL_END -->');
+                if (emData) setEmLevel(emData);
+
+                // Parse PHI status
+                const phiData = parseMarker(buffer, '<!-- PHI_STATUS_START -->', '<!-- PHI_STATUS_END -->');
+                if (phiData) setPhiProtected(phiData.phi_detected);
+
+                // Display text = everything before the first marker
+                const markerStarts = [
+                    '<!-- BILLING_CODES_START -->',
+                    '<!-- EM_LEVEL_START -->',
+                    '<!-- PHI_STATUS_START -->',
+                ].map(tag => buffer.indexOf(tag)).filter(i => i !== -1);
+
+                if (markerStarts.length > 0) {
+                    setOutput(buffer.slice(0, Math.min(...markerStarts)).trim());
                 } else {
                     setOutput(buffer);
                 }
@@ -180,21 +221,30 @@ function ConsultationForm() {
                     />
                 </div>
 
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
-                >
-                    {loading ? (
-                        <span className="inline-flex items-center gap-2">
-                            <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                            </svg>
-                            <span className="animate-pulse">Generating Summary...</span>
-                        </span>
-                    ) : 'Generate Summary'}
-                </button>
+                <div className="flex gap-3">
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
+                    >
+                        {loading ? (
+                            <span className="inline-flex items-center justify-center gap-2">
+                                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                                </svg>
+                                <span className="animate-pulse">Generating Summary...</span>
+                            </span>
+                        ) : 'Generate Summary'}
+                    </button>
+                    <button
+                        type="button"
+                        onClick={handleClear}
+                        className="bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
+                    >
+                        Clear
+                    </button>
+                </div>
             </form>
 
             {specialtyMismatch && (
@@ -218,11 +268,60 @@ function ConsultationForm() {
 
             {output && (
                 <section className="mt-8 bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg p-8">
+                    {phiProtected && (
+                        <div className="mb-4 inline-flex items-center gap-1.5 text-xs font-medium bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 px-3 py-1.5 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                            PHI Protected
+                        </div>
+                    )}
+
                     <div className="markdown-content prose prose-blue dark:prose-invert max-w-none">
                         <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
                             {output}
                         </ReactMarkdown>
                     </div>
+
+                    {emLevel && (
+                        <div className="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+                                <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 text-sm font-bold">E</span>
+                                E&M Service Level
+                            </h3>
+                            <div className="bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 p-5">
+                                <div className="flex items-center gap-4 mb-4">
+                                    <span className="text-3xl font-bold font-mono text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-900/50 px-4 py-2 rounded-lg">
+                                        {emLevel.code}
+                                    </span>
+                                    <div>
+                                        <p className="font-semibold text-gray-900 dark:text-gray-100">
+                                            {emLevel.patient_type} Patient
+                                        </p>
+                                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                                            {emLevel.mdm_level} Medical Decision Making
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+                                    <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3">
+                                        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Problems</p>
+                                        <p className="text-sm text-gray-800 dark:text-gray-200">{emLevel.problems}</p>
+                                    </div>
+                                    <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3">
+                                        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Data</p>
+                                        <p className="text-sm text-gray-800 dark:text-gray-200">{emLevel.data}</p>
+                                    </div>
+                                    <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3">
+                                        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Risk</p>
+                                        <p className="text-sm text-gray-800 dark:text-gray-200">{emLevel.risk}</p>
+                                    </div>
+                                </div>
+                                <p className="text-sm text-gray-600 dark:text-gray-400 italic">{emLevel.justification}</p>
+                                <p className="text-xs text-gray-400 dark:text-gray-500 mt-3">Suggested E&M level &mdash; verify before billing</p>
+                            </div>
+                        </div>
+                    )}
 
                     {billingCodes.length > 0 && (
                         <div className="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
@@ -262,7 +361,18 @@ function ConsultationForm() {
 export default function Product() {
     return (
         <main className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-            {/* User Menu in Top Right */}
+            {/* Top Navigation */}
+            <div className="absolute top-4 left-4">
+                <Link
+                    href="/"
+                    className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+                    </svg>
+                    Home
+                </Link>
+            </div>
             <div className="absolute top-4 right-4">
                 <UserButton showName={true} />
             </div>

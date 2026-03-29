@@ -1,5 +1,8 @@
 import os
 import json
+from dotenv import load_dotenv
+
+load_dotenv(".env.local")
 from concurrent.futures import ThreadPoolExecutor
 import requests as http_requests  # type: ignore
 from fastapi import FastAPI, Depends  # type: ignore
@@ -8,6 +11,7 @@ from fastapi.responses import StreamingResponse  # type: ignore
 from pydantic import BaseModel  # type: ignore
 from fastapi_clerk_auth import ClerkConfig, ClerkHTTPBearer, HTTPAuthorizationCredentials  # type: ignore
 from openai import OpenAI  # type: ignore
+from api.hipaa_deidentify import PHIRedactor, restore_streaming
 
 app = FastAPI()
 app.add_middleware(
@@ -34,6 +38,10 @@ Reply with exactly three sections with the headings:
 ### Summary of visit for the doctor's records
 ### Next steps for the doctor
 ### Draft of email to patient in patient-friendly language
+Close the patient email with exactly this signature (do not repeat it):
+Dr. Ima Goode Pearson
+[specialty] Department
+(555) 555-5555
 """
 
 
@@ -81,24 +89,37 @@ def consultation_summary(
     user_id = creds.decoded["sub"]  # Available for tracking/auditing
     client = OpenAI()
 
-    # Validate notes match the selected specialty
-    specialty_result = check_specialty_match(client, visit.specialty, visit.notes)
+    # HIPAA de-identification: redact PHI before any external API call
+    redactor = PHIRedactor(patient_name=visit.patient_name)
+    redacted_notes, phi_mapping = redactor.redact(visit.notes)
+    phi_detected = bool(phi_mapping)
+
+    # Validate notes match the selected specialty (uses redacted notes)
+    specialty_result = check_specialty_match(client, visit.specialty, redacted_notes)
     if not specialty_result.get("match", True):
         reason = specialty_result.get("reason", "The consultation notes do not appear to match the selected specialty.")
         def mismatch_stream():
             yield f"data: <!-- SPECIALTY_MISMATCH -->{reason}<!-- /SPECIALTY_MISMATCH -->\n\n"
         return StreamingResponse(mismatch_stream(), media_type="text/event-stream")
 
-    user_prompt = user_prompt_for(visit)
+    # Build prompt with redacted patient name for external API
+    redacted_visit = Visit(
+        patient_name=f"[PHI_NAME_1]" if phi_detected else visit.patient_name,
+        date_of_visit=visit.date_of_visit,
+        specialty=visit.specialty,
+        notes=redacted_notes,
+    )
+    user_prompt = user_prompt_for(redacted_visit)
 
     prompt = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt},
     ]
 
-    # Start billing code extraction in parallel with the summary stream
-    billing_executor = ThreadPoolExecutor(max_workers=1)
-    billing_future = billing_executor.submit(lookup_billing_codes, client, visit.notes)
+    # Start billing code extraction and E&M calculation in parallel
+    executor = ThreadPoolExecutor(max_workers=2)
+    billing_future = executor.submit(lookup_billing_codes, client, redacted_notes)
+    em_future = executor.submit(calculate_em_level, client, redacted_notes)
 
     stream = client.chat.completions.create(
         model="gpt-5-nano",
@@ -107,22 +128,49 @@ def consultation_summary(
     )
 
     def event_stream():
+        carry = ""
         for chunk in stream:
             text = chunk.choices[0].delta.content
             if text:
-                lines = text.split("\n")
-                for line in lines[:-1]:
-                    yield f"data: {line}\n\n"
-                    yield "data:  \n"
-                yield f"data: {lines[-1]}\n\n"
+                # Restore PHI in streamed output
+                restored, carry = restore_streaming(text, carry, phi_mapping)
+                if restored:
+                    lines = restored.split("\n")
+                    for line in lines[:-1]:
+                        yield f"data: {line}\n\n"
+                        yield "data:  \n"
+                    yield f"data: {lines[-1]}\n\n"
 
+        # Flush any remaining carry buffer
+        if carry:
+            from api.hipaa_deidentify import restore
+            final = restore(carry, phi_mapping)
+            if final:
+                yield f"data: {final}\n\n"
+
+        # Append billing codes
         billing_table = billing_future.result(timeout=30)
-        billing_executor.shutdown(wait=False)
         if billing_table:
             yield "data: \n\n"
             yield "data: <!-- BILLING_CODES_START -->\n\n"
             yield f"data: {billing_table}\n\n"
             yield "data: <!-- BILLING_CODES_END -->\n\n"
+
+        # Append E&M level
+        em_result = em_future.result(timeout=30)
+        if em_result:
+            yield "data: <!-- EM_LEVEL_START -->\n\n"
+            yield f"data: {em_result}\n\n"
+            yield "data: <!-- EM_LEVEL_END -->\n\n"
+
+        # Append PHI status
+        phi_categories = list({k.split("_")[1] for k in phi_mapping.keys()}) if phi_mapping else []
+        phi_status = json.dumps({"phi_detected": phi_detected, "categories_found": phi_categories})
+        yield f"data: <!-- PHI_STATUS_START -->\n\n"
+        yield f"data: {phi_status}\n\n"
+        yield f"data: <!-- PHI_STATUS_END -->\n\n"
+
+        executor.shutdown(wait=False)
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")
 
@@ -204,3 +252,58 @@ def lookup_billing_codes(client: OpenAI, notes: str) -> str:
     if not codes:
         return ""
     return json.dumps(codes)
+
+
+em_system_prompt = """You are an expert medical billing coder specializing in E&M (Evaluation and Management) coding using the 2021 AMA/CMS MDM (Medical Decision Making) guidelines.
+
+Given consultation notes, determine the appropriate E&M CPT code.
+
+## MDM Guidelines (2 of 3 elements must meet or exceed the level)
+
+### Element 1: Number and Complexity of Problems
+- Straightforward: 1 self-limited/minor problem
+- Low: 2+ self-limited problems OR 1 stable chronic illness
+- Moderate: 1+ chronic illness with mild exacerbation OR 2+ stable chronic illnesses OR 1 undiagnosed new problem with uncertain prognosis
+- High: 1+ chronic illness with severe exacerbation OR 1 acute/chronic illness that poses threat to life or bodily function
+
+### Element 2: Amount and Complexity of Data Reviewed
+- Straightforward/None: Minimal or no data reviewed
+- Limited: Review of prior external notes OR ordering of tests
+- Moderate: Review of prior external notes AND ordering of tests OR independent interpretation of tests OR discussion with external physician
+- Extensive: Independent interpretation of a test performed by another physician AND discussion with external physician
+
+### Element 3: Risk of Complications, Morbidity, or Mortality
+- Minimal: Over-the-counter drugs, minor surgery with no risk factors
+- Low: Prescription drug management, minor surgery with risk factors
+- Moderate: Prescription drug management requiring monitoring, decision about minor surgery with risk factors, decision about elective major surgery
+- High: Drug therapy requiring intensive monitoring, decision about emergency major surgery, decision about hospitalization
+
+## Code Mapping
+| MDM Level | New Patient | Established Patient |
+|---|---|---|
+| Straightforward | 99202 | 99211 |
+| Low | 99203 | 99212 |
+| Moderate | 99204 | 99213 |
+| High | 99205 | 99215 |
+
+Note: Determine new vs established based on context clues in the notes (e.g., "new patient", "follow-up", "established", "returning").
+If unclear, default to "Established".
+
+Reply with ONLY a JSON object:
+{"code": "99213", "patient_type": "Established", "mdm_level": "Moderate", "problems": "1 chronic illness with mild exacerbation", "data": "Review of lab results ordered", "risk": "Prescription drug management", "justification": "One sentence summary"}"""
+
+
+def calculate_em_level(client: OpenAI, notes: str) -> str:
+    resp = client.chat.completions.create(
+        model="gpt-5-nano",
+        messages=[
+            {"role": "system", "content": em_system_prompt},
+            {"role": "user", "content": notes},
+        ],
+    )
+    text = resp.choices[0].message.content.strip()
+    try:
+        json.loads(text)
+        return text
+    except json.JSONDecodeError:
+        return ""

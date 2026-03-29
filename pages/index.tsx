@@ -42,7 +42,7 @@ export default function Home() {
             Consultation Notes
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-400 mb-12 max-w-2xl mx-auto">
-            AI-powered assistant that generates professional summaries, action items, and patient communications from your consultation notes
+            AI-powered assistant that generates professional summaries, action items, patient communications, E&M service level coding, and HIPAA-compliant de-identification from your consultation notes
           </p>
 
           {/* Features Grid */}
@@ -77,6 +77,26 @@ export default function Home() {
                 </p>
               </div>
             </div>
+            <div className="relative group">
+              <div className="absolute inset-0 bg-gradient-to-r from-amber-600 to-orange-600 rounded-xl blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
+              <div className="relative bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 backdrop-blur-sm">
+                <div className="text-3xl mb-4">💲</div>
+                <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">E&M Level Coding</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                  Automatically suggest E&M service level codes based on 2021 AMA/CMS MDM guidelines
+                </p>
+              </div>
+            </div>
+            <div className="relative group">
+              <div className="absolute inset-0 bg-gradient-to-r from-teal-600 to-green-600 rounded-xl blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
+              <div className="relative bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 backdrop-blur-sm">
+                <div className="text-3xl mb-4">🛡️</div>
+                <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">HIPAA De-identification</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                  PHI is automatically redacted before notes are sent to external AI services
+                </p>
+              </div>
+            </div>
           </div>
           
           <SignedOut>
@@ -97,7 +117,7 @@ export default function Home() {
 
         {/* Trust Indicators */}
         <div className="text-center text-sm text-gray-500 dark:text-gray-400">
-          <p>HIPAA Compliant • Secure • Professional</p>
+          <p>Demonstration Purposes Only • Secure • Professional</p>
         </div>
       </div>
     </main>
