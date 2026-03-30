@@ -1,5 +1,3 @@
-# INSTRUCTIONS
-
 # BACKGROUND
 You have inherited an exist Medical Consultant application. The application stack consists of Next JS for the frontend, Python FastAPI for the backend, and deploy to Vercel.
 
