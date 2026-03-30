@@ -1,17 +1,23 @@
 import os
 import json
-from dotenv import load_dotenv
+import asyncio
+import sys
+from pathlib import Path
 
+from dotenv import load_dotenv
 load_dotenv(".env.local")
-from concurrent.futures import ThreadPoolExecutor
-import requests as http_requests  # type: ignore
+
+# Ensure sibling imports work in both local (uvicorn api.index:app) and Vercel
+sys.path.insert(0, str(Path(__file__).parent))
+
+import httpx
 from fastapi import FastAPI, Depends  # type: ignore
 from fastapi.middleware.cors import CORSMiddleware  # type: ignore
 from fastapi.responses import StreamingResponse  # type: ignore
 from pydantic import BaseModel  # type: ignore
 from fastapi_clerk_auth import ClerkConfig, ClerkHTTPBearer, HTTPAuthorizationCredentials  # type: ignore
-from openai import OpenAI  # type: ignore
-from api.hipaa_deidentify import PHIRedactor, restore_streaming
+from openai import AsyncOpenAI  # type: ignore
+from hipaa_deidentify import PHIRedactor, restore_streaming, restore as _restore
 
 app = FastAPI()
 app.add_middleware(
@@ -66,8 +72,8 @@ Be reasonable: General Practice covers a wide range of conditions.
 Only flag a mismatch when the notes clearly belong to a different specialty."""
 
 
-def check_specialty_match(client: OpenAI, specialty: str, notes: str) -> dict:
-    resp = client.chat.completions.create(
+async def check_specialty_match(client: AsyncOpenAI, specialty: str, notes: str) -> dict:
+    resp = await client.chat.completions.create(
         model="gpt-5-nano",
         messages=[
             {"role": "system", "content": specialty_check_prompt},
@@ -82,12 +88,12 @@ def check_specialty_match(client: OpenAI, specialty: str, notes: str) -> dict:
 
 
 @app.post("/api")
-def consultation_summary(
+async def consultation_summary(
     visit: Visit,
     creds: HTTPAuthorizationCredentials = Depends(clerk_guard),
 ):
     user_id = creds.decoded["sub"]  # Available for tracking/auditing
-    client = OpenAI()
+    client = AsyncOpenAI()
 
     # HIPAA de-identification: redact PHI before any external API call
     redactor = PHIRedactor(patient_name=visit.patient_name)
@@ -95,10 +101,10 @@ def consultation_summary(
     phi_detected = bool(phi_mapping)
 
     # Validate notes match the selected specialty (uses redacted notes)
-    specialty_result = check_specialty_match(client, visit.specialty, redacted_notes)
+    specialty_result = await check_specialty_match(client, visit.specialty, redacted_notes)
     if not specialty_result.get("match", True):
         reason = specialty_result.get("reason", "The consultation notes do not appear to match the selected specialty.")
-        def mismatch_stream():
+        async def mismatch_stream():
             yield f"data: <!-- SPECIALTY_MISMATCH -->{reason}<!-- /SPECIALTY_MISMATCH -->\n\n"
         return StreamingResponse(mismatch_stream(), media_type="text/event-stream")
 
@@ -116,20 +122,19 @@ def consultation_summary(
         {"role": "user", "content": user_prompt},
     ]
 
-    # Start billing code extraction and E&M calculation in parallel
-    executor = ThreadPoolExecutor(max_workers=2)
-    billing_future = executor.submit(lookup_billing_codes, client, redacted_notes)
-    em_future = executor.submit(calculate_em_level, client, redacted_notes)
+    # Start billing codes and E&M in parallel while streaming summary
+    billing_task = asyncio.create_task(lookup_billing_codes(client, redacted_notes))
+    em_task = asyncio.create_task(calculate_em_level(client, redacted_notes))
 
-    stream = client.chat.completions.create(
+    stream = await client.chat.completions.create(
         model="gpt-5-nano",
         messages=prompt,
         stream=True,
     )
 
-    def event_stream():
+    async def event_stream():
         carry = ""
-        for chunk in stream:
+        async for chunk in stream:
             text = chunk.choices[0].delta.content
             if text:
                 # Restore PHI in streamed output
@@ -143,21 +148,19 @@ def consultation_summary(
 
         # Flush any remaining carry buffer
         if carry:
-            from api.hipaa_deidentify import restore
-            final = restore(carry, phi_mapping)
+            final = _restore(carry, phi_mapping)
             if final:
                 yield f"data: {final}\n\n"
 
-        # Append billing codes
-        billing_table = billing_future.result(timeout=30)
+        # Await billing codes and E&M results (started in parallel above)
+        billing_table = await billing_task
         if billing_table:
             yield "data: \n\n"
             yield "data: <!-- BILLING_CODES_START -->\n\n"
             yield f"data: {billing_table}\n\n"
             yield "data: <!-- BILLING_CODES_END -->\n\n"
 
-        # Append E&M level
-        em_result = em_future.result(timeout=30)
+        em_result = await em_task
         if em_result:
             yield "data: <!-- EM_LEVEL_START -->\n\n"
             yield f"data: {em_result}\n\n"
@@ -169,8 +172,6 @@ def consultation_summary(
         yield f"data: <!-- PHI_STATUS_START -->\n\n"
         yield f"data: {phi_status}\n\n"
         yield f"data: <!-- PHI_STATUS_END -->\n\n"
-
-        executor.shutdown(wait=False)
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")
 
@@ -196,8 +197,8 @@ If no billable items are found, return [].
 Return ONLY the JSON array, no other text."""
 
 
-def extract_billable_items(client: OpenAI, notes: str) -> list[str]:
-    resp = client.chat.completions.create(
+async def extract_billable_items(client: AsyncOpenAI, notes: str) -> list[str]:
+    resp = await client.chat.completions.create(
         model="gpt-5-nano",
         messages=[
             {"role": "system", "content": extraction_prompt},
@@ -211,31 +212,37 @@ def extract_billable_items(client: OpenAI, notes: str) -> list[str]:
         return []
 
 
-def lookup_billing_codes(client: OpenAI, notes: str) -> str:
+async def lookup_billing_codes(client: AsyncOpenAI, notes: str) -> str:
     api_key = os.getenv("SEQUOIA_CODES_API_KEY")
     if not api_key:
         return ""
 
-    billable_items = extract_billable_items(client, notes)
+    billable_items = await extract_billable_items(client, notes)
     if not billable_items:
         return ""
 
-    def search_code(item: str):
-        resp = http_requests.get(
-            "https://api.sequoiacodes.com/v1/cpt/searchCode",
-            params={"query": item, "limit": 1},
-            headers={"Authorization": f"Bearer {api_key}"},
-            timeout=15,
-        )
-        if resp.status_code != 200:
+    async def search_code(http_client: httpx.AsyncClient, item: str):
+        try:
+            resp = await http_client.get(
+                "https://api.sequoiacodes.com/v1/cpt/searchCode",
+                params={"query": item, "limit": 1},
+                headers={"Authorization": f"Bearer {api_key}"},
+                timeout=15,
+            )
+            if resp.status_code != 200:
+                return None
+            results = resp.json().get("data", {}).get("results", [])
+            if results:
+                return results[0]
+        except Exception:
             return None
-        results = resp.json().get("data", {}).get("results", [])
-        if results:
-            return results[0]
         return None
 
-    with ThreadPoolExecutor(max_workers=len(billable_items)) as pool:
-        search_results = list(pool.map(search_code, billable_items))
+    # Fetch all billing codes concurrently with async
+    async with httpx.AsyncClient() as http_client:
+        search_results = await asyncio.gather(
+            *[search_code(http_client, item) for item in billable_items]
+        )
 
     seen_codes = set()
     codes = []
@@ -293,8 +300,8 @@ Reply with ONLY a JSON object:
 {"code": "99213", "patient_type": "Established", "mdm_level": "Moderate", "problems": "1 chronic illness with mild exacerbation", "data": "Review of lab results ordered", "risk": "Prescription drug management", "justification": "One sentence summary"}"""
 
 
-def calculate_em_level(client: OpenAI, notes: str) -> str:
-    resp = client.chat.completions.create(
+async def calculate_em_level(client: AsyncOpenAI, notes: str) -> str:
+    resp = await client.chat.completions.create(
         model="gpt-5-nano",
         messages=[
             {"role": "system", "content": em_system_prompt},

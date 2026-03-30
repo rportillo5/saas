@@ -3,4 +3,5 @@ uvicorn
 openai
 fastapi-clerk-auth
 pydantic
-requests
+httpx
+python-dotenv
